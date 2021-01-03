@@ -87,9 +87,11 @@ services:
     ports:
       - 5601:5601    
     environment:
-      SERVERNAME: localhost
+      SERVER_NAME: kib01
+      SERVER_HOST: kib01
+      SERVER_PORT: 5601
 #      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: '[ "https://es01:9201", "https://es02:9202", "https://es03:9203" ]'
+      ELASTICSEARCH_HOSTS: https://es01:9201
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
@@ -110,9 +112,11 @@ services:
     ports:
       - 5602:5602   
     environment:
-      SERVERNAME: localhost
+      SERVER_NAME: kib02
+      SERVER_HOST: kib02
+      SERVER_PORT: 5602
 #      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: '[ "https://es01:9201", "https://es02:9202", "https://es03:9203" ]'
+      ELASTICSEARCH_HOSTS: https://es01:9201
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
