@@ -9,7 +9,7 @@ docker-compose -f create-certs.yml run --rm create_certs
 docker-compose up -d
 
 
-docker-compose down --verbose
+docker-compose down -v
 
 docker volume rm es_certs
 

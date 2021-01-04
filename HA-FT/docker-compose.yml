@@ -22,7 +22,7 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
     volumes: ['data01:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9200:9201
+      - 9201:9200
     healthcheck:
       test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
@@ -51,7 +51,7 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
     volumes: ['data02:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9200:9202
+      - 9202:9200
 
   es03:
     container_name: es03
@@ -75,7 +75,7 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es03/es03.key
     volumes: ['data03:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9200:9203
+      - 9203:9200
 
   kib01:
     image: docker.elastic.co/kibana/kibana:${VERSION}
@@ -106,7 +106,7 @@ services:
     container_name: kib02
     depends_on: {"es01": {"condition": "service_healthy"}}
     ports:
-      - 5601:5602   
+      - 5602:5601   
     environment:
       SERVER_NAME: kib02
       SERVER_HOST: kib02
