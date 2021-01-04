@@ -5,7 +5,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
     environment:
       - node.name=es01
-      - http.port=9201
       - discovery.seed_hosts=es01,es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD 
@@ -23,7 +22,7 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
     volumes: ['data01:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9201:9201
+      - 9200:9201
     healthcheck:
       test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
@@ -35,7 +34,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
     environment:
       - node.name=es02
-      - http.port=9202
       - discovery.seed_hosts=es01,es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
@@ -53,14 +51,13 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
     volumes: ['data02:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9202:9202
+      - 9200:9202
 
   es03:
     container_name: es03
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
     environment:
       - node.name=es03
-      - http.port=9203
       - discovery.seed_hosts=es01,es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
@@ -78,7 +75,7 @@ services:
       - xpack.security.transport.ssl.key=$CERTS_DIR/es03/es03.key
     volumes: ['data03:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
     ports:
-      - 9203:9203
+      - 9200:9203
 
   kib01:
     image: docker.elastic.co/kibana/kibana:${VERSION}
@@ -89,9 +86,8 @@ services:
     environment:
       SERVER_NAME: kib01
       SERVER_HOST: kib01
-      SERVER_PORT: 5601
 #      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: https://es01:9201
+      ELASTICSEARCH_HOSTS: https://es01:9200
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
@@ -110,13 +106,12 @@ services:
     container_name: kib02
     depends_on: {"es01": {"condition": "service_healthy"}}
     ports:
-      - 5602:5602   
+      - 5601:5602   
     environment:
       SERVER_NAME: kib02
       SERVER_HOST: kib02
-      SERVER_PORT: 5602
 #      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: https://es01:9201
+      ELASTICSEARCH_HOSTS: https://es01:9200
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
