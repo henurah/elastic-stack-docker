@@ -142,13 +142,13 @@ services:
         -E apm-server.api_key.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
         -E apm-server.api_key.elasticsearch.username=elastic
         -E apm-server.api_key.elasticsearch.password=$ELASTIC_PASSWORD
-        -E apm-server.api_key.elasticsearch.ssl.enabled:true
-        -E apm-server.api_key.elasticsearch.ssl.certificate_authorities: ["$CERTS_DIR/ca/ca.crt"]
+        -E apm-server.api_key.elasticsearch.ssl.enabled=true
+        -E apm-server.api_key.elasticsearch.ssl.certificate_authorities=["$CERTS_DIR/ca/ca.crt"]
         -E apm-server.rum.enabled=true
         -E output.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
         -E output.elasticsearch.username=elastic
         -E output.elasticsearch.password=$ELASTIC_PASSWORD
-        -E output.elasticsearch.ssl.certificate_authorities: ["$CERTS_DIR/ca/ca.crt"]
+        -E output.elasticsearch.ssl.certificate_authorities=["$CERTS_DIR/ca/ca.crt"]
     healthcheck:
       interval: 10s
       retries: 12
