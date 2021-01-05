@@ -1,0 +1,164 @@
+version: '2.2'
+services:
+  es01:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es01,es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD 
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es01/es01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
+    volumes: ['data01:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
+    ports:
+      - 9201:9200
+    healthcheck:
+      test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  es02:
+    container_name: es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01,es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es02/es02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
+    volumes: ['data02:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
+    ports:
+      - 9202:9200
+
+  es03:
+    container_name: es03
+    image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
+    environment:
+      - node.name=es03
+      - discovery.seed_hosts=es01,es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es03/es03.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es03/es03.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es03/es03.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es03/es03.key
+    volumes: ['data03:/usr/share/elasticsearch/data', 'certs:$CERTS_DIR']
+    ports:
+      - 9203:9200
+
+  kib01:
+    image: docker.elastic.co/kibana/kibana:${VERSION}
+    container_name: kib01
+    depends_on: {"es01": {"condition": "service_healthy"}}
+    ports:
+      - 5601:5601    
+    environment:
+      SERVER_NAME: kib01
+      SERVER_HOST: kib01
+#      ELASTICSEARCH_URL: https://es01:9200
+      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY: $CERTS_DIR/kib01/kib01.key
+      SERVER_SSL_CERTIFICATE: $CERTS_DIR/kib01/kib01.crt
+      XPACK_SECURITY_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_REPORTING_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_ENCRYPTEDSAVEDOBJECTS_KEYROTATION_DECRYPTIONONLYKEYS: $DECRYPTION_KEY
+    volumes: 
+      - certs:$CERTS_DIR
+
+  kib02:
+    image: docker.elastic.co/kibana/kibana:${VERSION}
+    container_name: kib02
+    depends_on: {"es01": {"condition": "service_healthy"}}
+    ports:
+      - 5602:5601   
+    environment:
+      SERVER_NAME: kib02
+      SERVER_HOST: kib02
+#      ELASTICSEARCH_URL: https://es01:9200
+      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY: $CERTS_DIR/kib02/kib02.key
+      SERVER_SSL_CERTIFICATE: $CERTS_DIR/kib02/kib02.crt
+      XPACK_SECURITY_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_REPORTING_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: $ENCRYPTION_KEY
+      XPACK_ENCRYPTEDSAVEDOBJECTS_KEYROTATION_DECRYPTIONONLYKEYS: $DECRYPTION_KEY
+    volumes: 
+      - certs:$CERTS_DIR
+
+  apm01:
+    image: docker.elastic.co/apm/apm-server:${VERSION}
+    container_name: apm01
+    depends_on: {"es01": {"condition": "service_healthy"}}
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+      - 8201:8200
+    command: >
+      apm-server -e
+        -E apm-server.ssl.enabled=true
+        -E apm-server.ssl.certificate=$CERTS_DIR/apm01/apm01.crt
+        -E apm-server.ssl.key=$CERTS_DIR/apm01/apm01.key
+        -E apm-server.api_key.enabled=true
+        -E apm-server.api_key.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
+        -E apm-server.api_key.elasticsearch.username=elastic
+        -E apm-server.api_key.elasticsearch.password=$ELASTIC_PASSWORD
+        -E apm-server.api_key.elasticsearch.ssl.enabled:true
+        -E apm-server.api_key.elasticsearch.ssl.certificate_authorities: ["$CERTS_DIR/ca/ca.crt"]
+        -E apm-server.rum.enabled=true
+        -E output.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
+        -E output.elasticsearch.username=elastic
+        -E output.elasticsearch.password=$ELASTIC_PASSWORD
+        -E output.elasticsearch.ssl.certificate_authorities: ["$CERTS_DIR/ca/ca.crt"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+    volumes: 
+      - certs:$CERTS_DIR
+
+  wait_until_ready:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
+    command: /usr/bin/true
+    depends_on: {"es01": {"condition": "service_healthy"}}
+
+volumes: {"data01", "data02", "data03", "certs"}
