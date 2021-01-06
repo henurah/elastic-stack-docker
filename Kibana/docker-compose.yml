@@ -78,11 +78,10 @@ services:
     container_name: kib01
     depends_on: {"es01": {"condition": "service_healthy"}}
     ports:
-      - 10.168.0.124:443:5601    
+      - 5601:5601    
     environment:
       SERVERNAME: localhost
-      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_HOSTS: "https://es01:9200,https://es02:9200,https://es03:9200"
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
