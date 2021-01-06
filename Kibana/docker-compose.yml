@@ -80,7 +80,8 @@ services:
     ports:
       - 5601:5601    
     environment:
-      SERVERNAME: localhost
+      SERVER_NAME: kib01
+      SERVER_HOST: kib01
       ELASTICSEARCH_HOSTS: '["https://es01:9200","https://es02:9200","https://es03:9200"]'
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
