@@ -39,7 +39,7 @@ Please see the [official documentation](https://www.elastic.co/guide/en/elastics
 Please refer to the [official documentation](https://www.elastic.co/guide/en/apm/agent/java/current/setup-javaagent.html) for more information.  We will set up the Java Agent for the official [Spring Boot](https://spring.io/guides/gs/spring-boot/) example using Gradle.
 
 * Download the latest Elastic Java APM agent ([official documentation](https://www.elastic.co/guide/en/apm/agent/java/current/setup-javaagent.html))
-* The APM Server in [APM_HA-FT](APM_HA-FT) has been configured to use API keys for [agent authentication](https://www.elastic.co/guide/en/apm/server/current/api-key.html#create-api-key-workflow).  Please run the following in the _Dev Tools_ application in Kibana:
+* The APM Server in [APM_HA-FT](APM_HA-FT/docker-compose.yml) has been configured to use API keys for [agent authentication](https://www.elastic.co/guide/en/apm/server/current/api-key.html#create-api-key-workflow).  Please run the following in the _Dev Tools_ application in Kibana:
 ```
 POST /_security/api_key
 {
