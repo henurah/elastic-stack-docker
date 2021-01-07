@@ -6,7 +6,7 @@ The following configurations are provided for you to quickly set up an Elastic S
 
 * [Kibana](Kibana) - 3 node ES cluster with 1 Kibana instance
 * [HA-FT](HA-FT) - 3 node ES cluster with 2 Kibana instances
-* [APM_HA-FT](APM_HA_FT) - 3 node ES cluster with 2 Kibana instances and 2 APM Servers (the main focus of this README)
+* [APM_HA-FT](APM_HA-FT) - 3 node ES cluster with 2 Kibana instances and 2 APM Servers (the main focus of this README)
 
 Please see the [official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html) for further information that may not be addressed in this README.
 
