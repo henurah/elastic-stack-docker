@@ -86,8 +86,7 @@ services:
     environment:
       SERVER_NAME: kib01
       SERVER_HOST: kib01
-#      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_HOSTS: '["https://es01:9200","https://es02:9200","https://es03:9200"]'
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
@@ -110,8 +109,7 @@ services:
     environment:
       SERVER_NAME: kib02
       SERVER_HOST: kib02
-#      ELASTICSEARCH_URL: https://es01:9200
-      ELASTICSEARCH_HOSTS: https://es01:9200
+      ELASTICSEARCH_HOSTS: '["https://es01:9200","https://es02:9200","https://es03:9200"]'
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
@@ -138,6 +136,37 @@ services:
         -E apm-server.ssl.enabled=true
         -E apm-server.ssl.certificate=$CERTS_DIR/apm01/apm01.crt
         -E apm-server.ssl.key=$CERTS_DIR/apm01/apm01.key
+        -E apm-server.api_key.enabled=true
+        -E apm-server.api_key.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
+        -E apm-server.api_key.elasticsearch.username=elastic
+        -E apm-server.api_key.elasticsearch.password=$ELASTIC_PASSWORD
+        -E apm-server.api_key.elasticsearch.ssl.enabled=true
+        -E apm-server.api_key.elasticsearch.ssl.certificate_authorities=["$CERTS_DIR/ca/ca.crt"]
+        -E apm-server.rum.enabled=true
+        -E output.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
+        -E output.elasticsearch.username=elastic
+        -E output.elasticsearch.password=$ELASTIC_PASSWORD
+        -E output.elasticsearch.ssl.certificate_authorities=["$CERTS_DIR/ca/ca.crt"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+    volumes: 
+      - certs:$CERTS_DIR
+
+  apm02:
+    image: docker.elastic.co/apm/apm-server:${VERSION}
+    container_name: apm02
+    depends_on: {"es01": {"condition": "service_healthy"}}
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+      - 8202:8200
+    command: >
+      apm-server -e
+        -E apm-server.ssl.enabled=true
+        -E apm-server.ssl.certificate=$CERTS_DIR/apm02/apm02.crt
+        -E apm-server.ssl.key=$CERTS_DIR/apm02/apm02.key
         -E apm-server.api_key.enabled=true
         -E apm-server.api_key.elasticsearch.hosts=["https://es01:9200","https://es02:9200","https://es03:9200"]
         -E apm-server.api_key.elasticsearch.username=elastic

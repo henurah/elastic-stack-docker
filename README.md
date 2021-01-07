@@ -15,19 +15,21 @@ Sample docker-compose files for different Docker configurations with SSL-enabled
 
 
 ## Running the 
-docker-compose -f create-certs.yml run --rm create_certs
+Update .env file
 
-docker-compose up -d
+`docker-compose -f create-certs.yml run --rm create_certs`
 
-
-docker-compose down -v
-
-docker volume rm es_certs
+`docker-compose up -d`
 
 
-docker volume ls
+`docker-compose down -v`
 
-docker-compose logs
+`docker volume rm es_certs`
+
+
+`docker volume ls`
+
+`docker-compose logs`
 
 
 
