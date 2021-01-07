@@ -39,7 +39,7 @@ Please see the [official documentation](https://www.elastic.co/guide/en/elastics
 Please refer to the [official documentation](https://www.elastic.co/guide/en/apm/agent/java/current/setup-javaagent.html) for more information.  We will set up the Java Agent for the official [Spring Boot](https://spring.io/guides/gs/spring-boot/) example using Gradle.
 
 * Download the latest Elastic Java APM agent ([official documentation](https://www.elastic.co/guide/en/apm/agent/java/current/setup-javaagent.html))
-* The APM Server in [APM_HA-FT/] has been configured to use API keys for [agent authentication](https://www.elastic.co/guide/en/apm/server/current/api-key.html#create-api-key-workflow).  Please run the following in the _Dev Tools_ application in Kibana:
+* The APM Server in [APM_HA-FT](APM_HA-FT) has been configured to use API keys for [agent authentication](https://www.elastic.co/guide/en/apm/server/current/api-key.html#create-api-key-workflow).  Please run the following in the _Dev Tools_ application in Kibana:
 ```
 POST /_security/api_key
 {
@@ -72,7 +72,7 @@ POST /_security/api_key
 $ echo -n maoB23YBYPQvC_KeVSUR:KU8o6aY-RKWcF_hBRgAayw |base64
 bWFvQjIzWUJZUFF2Q19LZVZTVVI6S1U4bzZhWS1SS1djRl9oQlJnQWF5dw==
 ```
-* Add the following lines to the Spring Boot build.gradle file substituting the base64-encoded api_key and the urls for the APM Server:
+* Add the following lines to the Spring Boot build.gradle file substituting the base64-encoded _api_key_ and the _server_urls_ for the APM Server:
 ```
 bootRun {
         jvmArgs = ["-javaagent:./elastic-apm-agent-1.19.0.jar", "-Delastic.apm.api_key=bWFvQjIzWUJZUFF2Q19LZVZTVVI6S1U4bzZhWS1SS1djRl9oQlJnQWF5dw==", "-Delastic.apm.verify_server_cert=false", "-Delastic.apm.service_name=your-example-service", "-Delastic.apm.application_packages=org.example", "-Delastic.apm.server_urls=https://pathToHost:8201,https://pathToHost:8202"]
