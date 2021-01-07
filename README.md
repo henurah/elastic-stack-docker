@@ -22,7 +22,7 @@ Please see the [official documentation](https://www.elastic.co/guide/en/elastics
 `docker-compose -f create-certs.yml run --rm create_certs`
 * Start your containers using the `docker-compose` command:
 `docker-compose up -d`
-* Please note the ports that are being exposed on the host from the [docker-compose.yml](APM_HA-FT/docker-compose.yml) file.  For example, although internally the containers for Elasticsearch are listening on port 9200, they are mapped to 9201, 9202, and 9203 on the host, respectively. 
+* Please note the ports that are being exposed on the host from the [docker-compose.yml](APM_HA-FT/docker-compose.yml) file.  For example, although internally the containers for Elasticsearch are listening on port 9200, they are mapped to 9201, 9202, and 9203 on the host. 
 * Verify that the Kibana host(s) are accessible (set to listen on port 5601 and 5602 on the host) and that you can log into the Kibana hosts using the _elastic_ superuser and password (set in the .env file).
 * Verify that the APM Server is properly configured by going into the APM application in Kibana and going through the wizard up to the point of the APM Server set up.
 * Install and configure your APM agents to send data to the APM Server(s).  Java Agent example is shown in the next section.
